@@ -9,6 +9,7 @@ let currentCol = 0;
 const MAX_ROWS = 6;
 const MAX_COLS = 5;
 let targetWord = "";
+let gameOver = false;
 
 const keys = [
     ..."QWERTYUIOP",
@@ -81,6 +82,7 @@ function registerInputHandlers() {
 }
 
 function initGame() {
+    gameOver = false;
     currentRow = 0;
     currentCol = 0;
     clearMessage();
@@ -94,13 +96,14 @@ function initGame() {
         key.className = "key";
     });
 
+
+
     fetch(randomWordURL)
     .then(response => response.json())
     .then(data => {
         targetWord = data[0].toUpperCase();
         console.log("Target Word:", targetWord);
-    }
-    )
+    })
     .catch(error => {
         console.error("Error fetching target word:", error);
         targetWord = "APPLE"; // Fallback word
@@ -144,6 +147,7 @@ function handleOnScreenKey(key) {
 // ----------------------------
 
 function deleteLetter() {
+    if (gameOver) return;
     if (currentCol === 0 || currentRow >= MAX_ROWS) return;
 
     currentCol--;
@@ -196,6 +200,7 @@ async function isRealWord(word){
 }
 
 async function submitGuess() {
+    if (gameOver) return;
     const guess = getCurrentGuess();
 
     if (guess.length < MAX_COLS) {
@@ -278,8 +283,8 @@ function colorRowTiles(rowIndex, evaluation) {
             setTimeout(() => {
                 tile.classList.remove("flip");
                 tile.classList.add(evaluation[i]);
-            }, 200);
-        }, i * 200);
+            }, 250);
+        }, i * 300);
     }
 }
 
@@ -321,19 +326,15 @@ function advanceRow() {
 }
 
 function handleWin() {
+    gameOver = true;
     showMessage("You win!");
 
     const row = document.getElementById(`row-${currentRow}`);
-    const tilesInRow = row.children;
-
-    for (let i = 0; i < MAX_COLS; i++){
-        setTimeout(() => {
-            tilesInRow[i].classList.add("bounce");
-        }, i * 200);
-    }
+    row.classList.add("bounce");
 }
 
 function handleLose() {
+    gameOver = true;
     showMessage(`You lose. Word: ${targetWord}`);
 }
 
@@ -349,7 +350,7 @@ function showMessage(text) {
 
 function clearMessage() {
     messageContainer.textContent = "";
-    messageContainer.classList.remove("visible");
+    setTimeout(() => messageContainer.classList.remove("visible"), 300);
 }
 
 // ----------------------------
@@ -362,6 +363,7 @@ function shakeRow(rowIndex) {
 }
 
 function insertLetter(letter){
+    if (gameOver) return;
     if (currentCol >= MAX_COLS || currentRow >= MAX_ROWS)
         return;
     const tileIndex = currentRow * MAX_COLS + currentCol;

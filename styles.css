@@ -123,6 +123,12 @@ main {
     font-size: 18px;
     min-height: 24px;
     margin-top: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+#message.visible {
+    opacity: 1;
 }
 
 /* ========================
@@ -132,11 +138,11 @@ main {
 /* --- TILE POP --- */
 @keyframes pop {
     0%   { transform: scale(1); }
-    50%  { transform: scale(1.15); }
+    50%  { transform: scale(1.1); }
     100% { transform: scale(1); }
 }
 .tile.pop {
-    animation: pop 120ms ease-out;
+    animation: pop 100ms ease-out;
 }
 
 /* --- SHAKE --- */
@@ -159,7 +165,7 @@ main {
     100% { transform: rotateX(0); }
 }
 .tile.flip {
-    animation: flip 400ms ease-in-out forwards;
+    animation: flip 500ms ease-in-out forwards;
 }
 
 /* --- BOUNCE --- */
@@ -169,7 +175,7 @@ main {
     60%  { transform: translateY(4px); }
     100% { transform: translateY(0); }
 }
-.tile.bounce {
+.row.bounce {
     animation: bounce 700ms ease;
 }
 
