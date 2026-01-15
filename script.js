@@ -28,6 +28,7 @@ const randomWordURL = "https://random-word-api.vercel.app/api?words=1&length=5&t
 // ----------------------------
 
 function createBoard() {
+    board.innerHTML = "";
     for (let r = 0; r < MAX_ROWS; r++) {
         const row = document.createElement("div");
         row.classList.add("row");
@@ -44,6 +45,7 @@ function createBoard() {
 
 
 function createKeyboard() {
+    keyboard.innerHTML = "";
     keys.forEach(letter => {
         const key = document.createElement("div");
         key.classList.add("key");
@@ -140,18 +142,6 @@ function handleOnScreenKey(key) {
 // ----------------------------
 // Row / Tile Management
 // ----------------------------
-
-function insertLetter(letter) {
-    if (currentCol >= MAX_COLS || currentRow >= MAX_ROWS) return;
-
-    const tileIndex = currentRow * MAX_COLS + currentCol;
-    const tile = tiles[tileIndex];
-
-    tile.textContent = letter;
-    tile.classList.add("filled");
-
-    currentCol++;
-}
 
 function deleteLetter() {
     if (currentCol === 0 || currentRow >= MAX_ROWS) return;
@@ -282,14 +272,14 @@ function evaluateGuess(guess, target) {
 
 function colorRowTiles(rowIndex, evaluation) {
     for (let i = 0; i < MAX_COLS; i++) {
-        const tile = document.querySelector(`#row-${rowIndex}`).children[i];
+        const tile = tiles[rowIndex * MAX_COLS + i];
         setTimeout(() => {
             tile.classList.add("flip");
             setTimeout(() => {
                 tile.classList.remove("flip");
                 tile.classList.add(evaluation[i]);
-            }, 300);
-        }, i * 300);
+            }, 200);
+        }, i * 200);
     }
 }
 
@@ -333,12 +323,12 @@ function advanceRow() {
 function handleWin() {
     showMessage("You win!");
 
-    const row  = document.getElementById(`row-${currentRow}`);
+    const row = document.getElementById(`row-${currentRow}`);
     const tilesInRow = row.children;
 
     for (let i = 0; i < MAX_COLS; i++){
         setTimeout(() => {
-            tilesInRow[i].classList.add("win-bounce");
+            tilesInRow[i].classList.add("bounce");
         }, i * 200);
     }
 }
@@ -365,7 +355,7 @@ function clearMessage() {
 // ----------------------------
 // Animations
 // ----------------------------
-function shakeRow(row) {
+function shakeRow(rowIndex) {
     const currRow = document.getElementById(`row-${rowIndex}`);
     currRow.classList.add("shake");
     setTimeout(() => currRow.classList.remove("shake"), 600);

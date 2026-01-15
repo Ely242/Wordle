@@ -34,6 +34,7 @@ main {
     display: flex;
     justify-content: center;
     gap: 8px;
+    perspective: 1000px;
 }
 
 /* Board */
@@ -57,6 +58,8 @@ main {
     color: #fff;
     background-color: #121213;
     box-sizing: border-box;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    transform-style: preserve-3d;
 }
 
 /* Tile states */
@@ -156,7 +159,7 @@ main {
     100% { transform: rotateX(0); }
 }
 .tile.flip {
-    animation: flip 600ms ease forwards;
+    animation: flip 400ms ease-in-out forwards;
 }
 
 /* --- BOUNCE --- */
