@@ -10,11 +10,14 @@ const MAX_ROWS = 6;
 const MAX_COLS = 5;
 let targetWord = "";
 let gameOver = false;
+let activeGameToken = 0;
+let animationTimeoutIds = [];
+let messageTimeoutId = null;
 
-const keys = [
-    ..."QWERTYUIOP",
-    ..."ASDFGHJKL",
-    ..."ZXCVBNM"
+const keyRows = [
+    [..."QWERTYUIOP"],
+    [..."ASDFGHJKL"],
+    [..."ZXCVBNM"]
 ];
 
 // API stuff
@@ -47,23 +50,36 @@ function createBoard() {
 
 function createKeyboard() {
     keyboard.innerHTML = "";
-    keys.forEach(letter => {
-        const key = document.createElement("div");
-        key.classList.add("key");
-        key.textContent = letter;
-        keyboard.appendChild(key);
+
+    keyRows.forEach((letters, rowIndex) => {
+        const row = document.createElement("div");
+        row.classList.add("key-row", `key-row-${rowIndex + 1}`);
+
+        if (rowIndex === 2) {
+            row.appendChild(createKey("ENTER", true));
+        }
+
+        letters.forEach(letter => {
+            row.appendChild(createKey(letter));
+        });
+
+        if (rowIndex === 2) {
+            row.appendChild(createKey("⌫", true));
+        }
+
+        keyboard.appendChild(row);
     });
+}
 
-    const enter = document.createElement("div");
-    enter.classList.add("key", "large");
-    enter.textContent = "ENTER";
-
-    const back = document.createElement("div");
-    back.classList.add("key", "large");
-    back.textContent = "⌫";
-
-    keyboard.appendChild(enter);
-    keyboard.appendChild(back);
+function createKey(label, isLarge = false) {
+    const key = document.createElement("button");
+    key.type = "button";
+    key.classList.add("key");
+    if (isLarge) {
+        key.classList.add("large");
+    }
+    key.textContent = label;
+    return key;
 }
 
 // ----------------------------
@@ -81,30 +97,46 @@ function registerInputHandlers() {
     });
 }
 
+function queueAnimationTimeout(callback, delay) {
+    const timeoutId = window.setTimeout(callback, delay);
+    animationTimeoutIds.push(timeoutId);
+    return timeoutId;
+}
+
+function clearAnimationTimeouts() {
+    animationTimeoutIds.forEach(timeoutId => clearTimeout(timeoutId));
+    animationTimeoutIds = [];
+}
+
+function resetKeyboardStatus() {
+    const keyboardKeys = keyboard.querySelectorAll(".key");
+    keyboardKeys.forEach(key => {
+        key.classList.remove("correct", "present", "absent");
+    });
+}
+
 function initGame() {
+    activeGameToken++;
+    const thisGameToken = activeGameToken;
+
     gameOver = false;
     currentRow = 0;
     currentCol = 0;
-    clearMessage();
-    tiles.forEach(tile => {
-        tile.textContent = "";
-        tile.className = "tile";
-    });
-
-    const keyboardKeys = keyboard.querySelectorAll(".key");
-    keyboardKeys.forEach(key => {
-        key.className = "key";
-    });
-
-
+    targetWord = "";
+    clearAnimationTimeouts();
+    clearMessage(true);
+    createBoard();
+    resetKeyboardStatus();
 
     fetch(randomWordURL)
     .then(response => response.json())
     .then(data => {
+        if (thisGameToken !== activeGameToken) return;
         targetWord = data[0].toUpperCase();
         console.log("Target Word:", targetWord);
     })
     .catch(error => {
+        if (thisGameToken !== activeGameToken) return;
         console.error("Error fetching target word:", error);
         targetWord = "APPLE"; // Fallback word
     });
@@ -201,6 +233,11 @@ async function isRealWord(word){
 
 async function submitGuess() {
     if (gameOver) return;
+    if (!targetWord) {
+        showMessage("Loading word...");
+        return;
+    }
+
     const guess = getCurrentGuess();
 
     if (guess.length < MAX_COLS) {
@@ -278,9 +315,9 @@ function evaluateGuess(guess, target) {
 function colorRowTiles(rowIndex, evaluation) {
     for (let i = 0; i < MAX_COLS; i++) {
         const tile = tiles[rowIndex * MAX_COLS + i];
-        setTimeout(() => {
+        queueAnimationTimeout(() => {
             tile.classList.add("flip");
-            setTimeout(() => {
+            queueAnimationTimeout(() => {
                 tile.classList.remove("flip");
                 tile.classList.add(evaluation[i]);
             }, 250);
@@ -343,14 +380,32 @@ function handleLose() {
 // ----------------------------
 
 function showMessage(text) {
+    if (messageTimeoutId) {
+        clearTimeout(messageTimeoutId);
+        messageTimeoutId = null;
+    }
+
     messageContainer.textContent = text;
     messageContainer.classList.add("visible");
-    setTimeout(clearMessage, 2000);
+    messageTimeoutId = window.setTimeout(clearMessage, 2000);
 }
 
-function clearMessage() {
+function clearMessage(immediate = false) {
+    if (messageTimeoutId) {
+        clearTimeout(messageTimeoutId);
+        messageTimeoutId = null;
+    }
+
     messageContainer.textContent = "";
-    setTimeout(() => messageContainer.classList.remove("visible"), 300);
+    if (immediate) {
+        messageContainer.classList.remove("visible");
+        return;
+    }
+
+    messageTimeoutId = window.setTimeout(() => {
+        messageContainer.classList.remove("visible");
+        messageTimeoutId = null;
+    }, 300);
 }
 
 // ----------------------------
@@ -359,7 +414,7 @@ function clearMessage() {
 function shakeRow(rowIndex) {
     const currRow = document.getElementById(`row-${rowIndex}`);
     currRow.classList.add("shake");
-    setTimeout(() => currRow.classList.remove("shake"), 600);
+    queueAnimationTimeout(() => currRow.classList.remove("shake"), 600);
 }
 
 function insertLetter(letter){
@@ -373,7 +428,7 @@ function insertLetter(letter){
     tile.classList.add("filled");
 
     tile.classList.add("pop");
-    setTimeout(() => tile.classList.remove("pop"), 150);
+    queueAnimationTimeout(() => tile.classList.remove("pop"), 150);
 
     currentCol++;
 }
@@ -387,7 +442,6 @@ document.getElementById("reload").addEventListener("click", () => {
 // Initialize
 // ----------------------------
 
-createBoard();
 createKeyboard();
 registerInputHandlers();
 initGame();

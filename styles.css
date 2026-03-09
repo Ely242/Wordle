@@ -1,151 +1,215 @@
-/* Basic reset */
+:root {
+    --bg: #ffffff;
+    --text: #1a1a1b;
+    --border: #d3d6da;
+    --tile-bg: #ffffff;
+    --tile-filled-border: #878a8c;
+    --key-bg: #d3d6da;
+    --key-text: #1a1a1b;
+    --correct: #6aaa64;
+    --present: #c9b458;
+    --absent: #7d8184;
+    --board-gap: 6px;
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+html,
 body {
-    background: #111;
-    color: #fff;
-    font-family: Arial, Helvetica, sans-serif;
-    display: flex;
-    justify-content: center;
-    padding-top: 20px;
+    height: 100%;
 }
 
-/* Layout */
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+}
+
 main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-}
-
-#title{
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: bold;
-    letter-spacing: 3px;
-    font-size: 28px;
-    margin-bottom: 20px;
-}
-
-.row{
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    perspective: 1000px;
-}
-
-/* Board */
-#board {
+    width: min(520px, 100%);
+    height: 100dvh;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    margin: 20px auto;
+    padding: max(env(safe-area-inset-top), 8px) 12px max(env(safe-area-inset-bottom), 10px);
+}
+
+#topbar {
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border-bottom: 1px solid #e3e3e3;
+    padding-bottom: 10px;
+}
+
+#title {
+    font-size: clamp(1.6rem, 4.8vw, 2rem);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+#reload {
+    border: 1px solid #d3d6da;
+    background: #f7f7f7;
+    color: #3a3a3c;
+    border-radius: 999px;
+    padding: 10px 14px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: background-color 130ms ease;
+}
+
+#reload:hover {
+    background: #ececec;
+}
+
+#reload:active {
+    background: #e5e5e5;
+}
+
+#board {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--board-gap);
+}
+
+.row {
+    display: flex;
+    gap: var(--board-gap);
+    perspective: 1000px;
 }
 
 .tile {
-    width: 62px;
-    height: 62px;
-    border: 2px solid #3a3a3c;
+    width: clamp(48px, 11.8vw, 62px);
+    height: clamp(48px, 11.8vw, 62px);
+    border: 2px solid var(--border);
+    background: var(--tile-bg);
+    color: var(--text);
+    font-size: clamp(1.55rem, 7vw, 2rem);
+    font-weight: 700;
+    line-height: 1;
+    text-transform: uppercase;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    color: #fff;
-    background-color: #121213;
-    box-sizing: border-box;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
     transform-style: preserve-3d;
+    transition: border-color 140ms ease, background-color 140ms ease;
 }
 
-/* Tile states */
-.correct {
-    background: #538d4e; /* green */
-    border-color: #538d4e;
+.tile.filled {
+    border-color: var(--tile-filled-border);
 }
 
-.present {
-    background: #b59f3b; /* yellow */
-    border-color: #b59f3b;
+.tile.correct {
+    background: var(--correct);
+    border-color: var(--correct);
+    color: #ffffff;
 }
 
-.absent {
-    background: #3a3a3c; /* gray */
-    border-color: #3a3a3c;
+.tile.present {
+    background: var(--present);
+    border-color: var(--present);
+    color: #ffffff;
 }
 
-/* Keyboard */
-#keyboard {
-    display: grid;
-    grid-template-columns: repeat(10, 1fr);
-    gap: 6px;
-    width: 90%;
-    max-width: 600px;
-    margin-top: 10px;
+.tile.absent {
+    background: var(--absent);
+    border-color: var(--absent);
+    color: #ffffff;
 }
 
-.key {
-    padding: 12px 0;
-    background: #818384;
-    border-radius: 4px;
-    text-align: center;
-    font-weight: bold;
-    cursor: pointer;
-    user-select: none;
-}
-
-.key:hover {
-    background: #a4a4a6;
-}
-
-.key.large {
-    grid-column: span 2;
-}
-
-.key.correct {
-    background: #538d4e;
-}
-
-.key.present {
-    background: #b59f3b;
-}
-
-.key.absent {
-    background: #3a3a3c;
-}
-
-/* Message */
 #message {
-    font-size: 18px;
-    min-height: 24px;
-    margin-top: 10px;
+    min-height: 20px;
+    text-align: center;
+    font-size: 0.95rem;
+    color: #5d6063;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 200ms ease;
 }
 
 #message.visible {
     opacity: 1;
 }
 
-/* ========================
-   Animations
-======================== */
+#keyboard {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    touch-action: manipulation;
+}
 
-/* --- TILE POP --- */
+.key-row {
+    width: 100%;
+    display: flex;
+    gap: 6px;
+}
+
+.key-row-2 {
+    padding: 0 16px;
+}
+
+.key {
+    flex: 1;
+    min-width: 0;
+    min-height: clamp(44px, 7.2vh, 58px);
+    border: none;
+    border-radius: 4px;
+    background: var(--key-bg);
+    color: var(--key-text);
+    font-size: clamp(0.88rem, 2.7vw, 1rem);
+    font-weight: 700;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.key.large {
+    flex: 1.45;
+    font-size: clamp(0.72rem, 2.2vw, 0.82rem);
+    letter-spacing: 0.02em;
+}
+
+.key.correct {
+    background: var(--correct);
+    color: #ffffff;
+}
+
+.key.present {
+    background: var(--present);
+    color: #ffffff;
+}
+
+.key.absent {
+    background: var(--absent);
+    color: #ffffff;
+}
+
 @keyframes pop {
-    0%   { transform: scale(1); }
-    50%  { transform: scale(1.1); }
+    0% { transform: scale(1); }
+    50% { transform: scale(1.08); }
     100% { transform: scale(1); }
 }
+
 .tile.pop {
-    animation: pop 100ms ease-out;
+    animation: pop 110ms ease-out;
 }
 
-/* --- SHAKE --- */
 @keyframes shake {
     0% { transform: translateX(0); }
     20% { transform: translateX(-6px); }
@@ -154,52 +218,95 @@ main {
     80% { transform: translateX(6px); }
     100% { transform: translateX(0); }
 }
+
 .row.shake {
     animation: shake 600ms ease;
 }
 
-/* --- FLIP --- */
 @keyframes flip {
-    0%   { transform: rotateX(0); }
-    50%  { transform: rotateX(90deg); }
+    0% { transform: rotateX(0); }
+    50% { transform: rotateX(90deg); }
     100% { transform: rotateX(0); }
 }
+
 .tile.flip {
     animation: flip 500ms ease-in-out forwards;
 }
 
-/* --- BOUNCE --- */
 @keyframes bounce {
-    0%   { transform: translateY(0); }
-    30%  { transform: translateY(-20px); }
-    60%  { transform: translateY(4px); }
+    0% { transform: translateY(0); }
+    30% { transform: translateY(-16px); }
+    60% { transform: translateY(4px); }
     100% { transform: translateY(0); }
 }
+
 .row.bounce {
     animation: bounce 700ms ease;
 }
 
-/* Reload Button */
-#reload {
-    margin-top: 10px;
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #8f3f3f;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+@media (max-width: 420px) {
+    main {
+        padding: max(env(safe-area-inset-top), 6px) 8px max(env(safe-area-inset-bottom), 8px);
+        gap: 8px;
+    }
+
+    #topbar {
+        min-height: 50px;
+        padding-bottom: 8px;
+    }
+
+    #reload {
+        padding: 8px 12px;
+        font-size: 0.74rem;
+    }
+
+    .key-row-2 {
+        padding: 0 10px;
+    }
 }
 
-#reload:hover {
-    background-color: #6aaa64;
+@media (max-height: 760px) {
+    :root {
+        --board-gap: 5px;
+    }
+
+    main {
+        gap: 8px;
+    }
+
+    .tile {
+        width: clamp(42px, 10.7vw, 56px);
+        height: clamp(42px, 10.7vw, 56px);
+        font-size: clamp(1.35rem, 6.3vw, 1.75rem);
+    }
+
+    #keyboard {
+        gap: 6px;
+    }
+
+    .key {
+        min-height: 42px;
+    }
 }
 
-#reload:active {
-    background-color: #4a7c3c;
-}
+@media (max-height: 670px) {
+    #topbar {
+        min-height: 46px;
+    }
 
-/* make button smaller when clicked */
-#reload:active {
-    transform: scale(0.95);
+    #message {
+        min-height: 16px;
+        font-size: 0.82rem;
+    }
+
+    .tile {
+        width: clamp(38px, 9.8vw, 50px);
+        height: clamp(38px, 9.8vw, 50px);
+        font-size: clamp(1.2rem, 5.8vw, 1.55rem);
+    }
+
+    .key {
+        min-height: 38px;
+        font-size: clamp(0.77rem, 2.5vw, 0.9rem);
+    }
 }

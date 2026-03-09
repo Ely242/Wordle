@@ -9,15 +9,18 @@
 <body>
 
     <main>
-        <div id="title">Wordle</div>
+        <header id="topbar">
+            <div id="title">Wordle</div>
+            <button id="reload" type="button">New Game</button>
+        </header>
+
         <div id="board"></div>
+
+        <div id="message" aria-live="polite"></div>
 
         <div id="keyboard">
             <!-- inserting keys in javascript -->
         </div>
-
-        <div id="message"></div>
-        <button id="reload">Reload</button>
     </main>
 
     
