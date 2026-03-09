@@ -29,7 +29,7 @@ body {
     font-family: "Helvetica Neue", Arial, sans-serif;
     display: flex;
     justify-content: center;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 main {
@@ -37,7 +37,7 @@ main {
     height: 100dvh;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 6px;
     padding: max(env(safe-area-inset-top), 8px) 12px max(env(safe-area-inset-bottom), 10px);
 }
 
@@ -133,9 +133,9 @@ main {
 }
 
 #message {
-    min-height: 20px;
+    min-height: 16px;
     text-align: center;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     color: #5d6063;
     opacity: 0;
     transition: opacity 200ms ease;
@@ -146,10 +146,10 @@ main {
 }
 
 #keyboard {
-    margin-top: auto;
+    margin-top: 6px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
     width: 100%;
     touch-action: manipulation;
 }
@@ -161,18 +161,18 @@ main {
 }
 
 .key-row-2 {
-    padding: 0 16px;
+    padding: 0 14px;
 }
 
 .key {
     flex: 1;
     min-width: 0;
-    min-height: clamp(44px, 7.2vh, 58px);
+    min-height: clamp(50px, 8.2vh, 62px);
     border: none;
     border-radius: 4px;
     background: var(--key-bg);
     color: var(--key-text);
-    font-size: clamp(0.88rem, 2.7vw, 1rem);
+    font-size: clamp(0.98rem, 2.9vw, 1.08rem);
     font-weight: 700;
     cursor: pointer;
     user-select: none;
@@ -180,8 +180,8 @@ main {
 }
 
 .key.large {
-    flex: 1.45;
-    font-size: clamp(0.72rem, 2.2vw, 0.82rem);
+    flex: 1.55;
+    font-size: clamp(0.8rem, 2.3vw, 0.9rem);
     letter-spacing: 0.02em;
 }
 
@@ -247,7 +247,7 @@ main {
 @media (max-width: 420px) {
     main {
         padding: max(env(safe-area-inset-top), 6px) 8px max(env(safe-area-inset-bottom), 8px);
-        gap: 8px;
+        gap: 6px;
     }
 
     #topbar {
@@ -261,7 +261,16 @@ main {
     }
 
     .key-row-2 {
-        padding: 0 10px;
+        padding: 0 9px;
+    }
+
+    .key {
+        min-height: 48px;
+        font-size: 0.95rem;
+    }
+
+    .key.large {
+        font-size: 0.8rem;
     }
 }
 
@@ -271,7 +280,7 @@ main {
     }
 
     main {
-        gap: 8px;
+        gap: 6px;
     }
 
     .tile {
@@ -281,11 +290,12 @@ main {
     }
 
     #keyboard {
-        gap: 6px;
+        gap: 5px;
     }
 
     .key {
-        min-height: 42px;
+        min-height: 46px;
+        font-size: 0.92rem;
     }
 }
 
@@ -306,7 +316,7 @@ main {
     }
 
     .key {
-        min-height: 38px;
-        font-size: clamp(0.77rem, 2.5vw, 0.9rem);
+        min-height: 42px;
+        font-size: clamp(0.84rem, 2.6vw, 0.95rem);
     }
 }
