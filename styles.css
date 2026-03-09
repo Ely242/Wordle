@@ -94,8 +94,8 @@ main {
 }
 
 .tile {
-    width: clamp(48px, 11.8vw, 62px);
-    height: clamp(48px, 11.8vw, 62px);
+    width: clamp(52px, 12.4vw, 64px);
+    height: clamp(52px, 12.4vw, 64px);
     border: 2px solid var(--border);
     background: var(--tile-bg);
     color: var(--text);
@@ -152,6 +152,17 @@ main {
     gap: 6px;
     width: 100%;
     touch-action: manipulation;
+}
+
+@media (max-width: 768px) {
+    main {
+        height: 100svh;
+    }
+
+    #keyboard {
+        margin-top: auto;
+        padding-bottom: max(env(safe-area-inset-bottom), 2px);
+    }
 }
 
 .key-row {
@@ -265,12 +276,12 @@ main {
     }
 
     .key {
-        min-height: 48px;
-        font-size: 0.95rem;
+        min-height: 52px;
+        font-size: 1rem;
     }
 
     .key.large {
-        font-size: 0.8rem;
+        font-size: 0.86rem;
     }
 }
 
@@ -284,9 +295,9 @@ main {
     }
 
     .tile {
-        width: clamp(42px, 10.7vw, 56px);
-        height: clamp(42px, 10.7vw, 56px);
-        font-size: clamp(1.35rem, 6.3vw, 1.75rem);
+        width: clamp(50px, 12.2vw, 58px);
+        height: clamp(50px, 12.2vw, 58px);
+        font-size: clamp(1.5rem, 6.9vw, 1.85rem);
     }
 
     #keyboard {
@@ -294,8 +305,8 @@ main {
     }
 
     .key {
-        min-height: 46px;
-        font-size: 0.92rem;
+        min-height: 50px;
+        font-size: 0.98rem;
     }
 }
 
@@ -310,13 +321,13 @@ main {
     }
 
     .tile {
-        width: clamp(38px, 9.8vw, 50px);
-        height: clamp(38px, 9.8vw, 50px);
-        font-size: clamp(1.2rem, 5.8vw, 1.55rem);
+        width: clamp(46px, 11.5vw, 54px);
+        height: clamp(46px, 11.5vw, 54px);
+        font-size: clamp(1.35rem, 6.3vw, 1.65rem);
     }
 
     .key {
-        min-height: 42px;
-        font-size: clamp(0.84rem, 2.6vw, 0.95rem);
+        min-height: 46px;
+        font-size: clamp(0.92rem, 2.8vw, 1rem);
     }
 }
