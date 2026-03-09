@@ -25,7 +25,7 @@ const keyRows = [
 // title field is "No Definitions Found" when word is invalid
 const dictionaryURL = "https://api.dictionaryapi.dev/api/v2/entries/en/";
 
-const randomWordURL = "https://random-word-api.vercel.app/api?words=1&length=5&type=capitalized";
+const randomWordURL = "https://random-word-api.herokuapp.com/word?length=5&number=1&diff=3";
 
 // ----------------------------
 // Board + Keyboard Creation
