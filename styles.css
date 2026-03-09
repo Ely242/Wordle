@@ -82,6 +82,8 @@ main {
 
 #board {
     margin: 0 auto;
+    width: fit-content;
+    max-width: 100%;
     display: flex;
     flex-direction: column;
     gap: var(--board-gap);
@@ -159,6 +161,16 @@ main {
         height: 100svh;
     }
 
+    #board {
+        margin: auto auto 0;
+    }
+
+    .tile {
+        width: clamp(54px, 15.4vw, 68px);
+        height: clamp(54px, 15.4vw, 68px);
+        font-size: clamp(1.6rem, 7.2vw, 2rem);
+    }
+
     #keyboard {
         margin-top: auto;
         padding-bottom: max(env(safe-area-inset-bottom), 2px);
@@ -178,7 +190,7 @@ main {
 .key {
     flex: 1;
     min-width: 0;
-    min-height: clamp(60px, 8.2vh, 62px);
+    min-height: clamp(62px, 8.7vh, 66px);
     border: none;
     border-radius: 4px;
     background: var(--key-bg);
@@ -271,12 +283,18 @@ main {
         font-size: 0.74rem;
     }
 
+    .tile {
+        width: clamp(56px, 17vw, 70px);
+        height: clamp(56px, 17vw, 70px);
+        font-size: clamp(1.65rem, 7.8vw, 2.05rem);
+    }
+
     .key-row-2 {
         padding: 0 9px;
     }
 
     .key {
-        min-height: 52px;
+        min-height: 56px;
         font-size: 1rem;
     }
 
@@ -295,9 +313,9 @@ main {
     }
 
     .tile {
-        width: clamp(50px, 12.2vw, 58px);
-        height: clamp(50px, 12.2vw, 58px);
-        font-size: clamp(1.5rem, 6.9vw, 1.85rem);
+        width: clamp(55px, 12.8vw, 62px);
+        height: clamp(55px, 12.8vw, 62px);
+        font-size: clamp(1.55rem, 7.1vw, 1.9rem);
     }
 
     #keyboard {
@@ -305,7 +323,7 @@ main {
     }
 
     .key {
-        min-height: 50px;
+        min-height: 54px;
         font-size: 0.98rem;
     }
 }
@@ -321,13 +339,13 @@ main {
     }
 
     .tile {
-        width: clamp(46px, 11.5vw, 54px);
-        height: clamp(46px, 11.5vw, 54px);
-        font-size: clamp(1.35rem, 6.3vw, 1.65rem);
+        width: clamp(50px, 11.8vw, 56px);
+        height: clamp(50px, 11.8vw, 56px);
+        font-size: clamp(1.45rem, 6.7vw, 1.75rem);
     }
 
     .key {
-        min-height: 46px;
+        min-height: 50px;
         font-size: clamp(0.92rem, 2.8vw, 1rem);
     }
 }
