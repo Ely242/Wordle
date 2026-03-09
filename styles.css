@@ -94,8 +94,8 @@ main {
 }
 
 .tile {
-    width: clamp(52px, 12.4vw, 64px);
-    height: clamp(52px, 12.4vw, 64px);
+    width: clamp(62px, 12.4vw, 74px);
+    height: clamp(62px, 12.4vw, 74px);
     border: 2px solid var(--border);
     background: var(--tile-bg);
     color: var(--text);
@@ -178,7 +178,7 @@ main {
 .key {
     flex: 1;
     min-width: 0;
-    min-height: clamp(50px, 8.2vh, 62px);
+    min-height: clamp(60px, 8.2vh, 62px);
     border: none;
     border-radius: 4px;
     background: var(--key-bg);
