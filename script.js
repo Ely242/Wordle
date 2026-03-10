@@ -10,6 +10,7 @@ const MAX_ROWS = 6;
 const MAX_COLS = 5;
 let targetWord = "";
 let gameOver = false;
+let isTargetWordLoading = false;
 let activeGameToken = 0;
 let animationTimeoutIds = [];
 let messageTimeoutId = null;
@@ -20,12 +21,30 @@ const keyRows = [
     [..."ZXCVBNM"]
 ];
 
-// API stuff
-
-// title field is "No Definitions Found" when word is invalid
-const dictionaryURL = "https://api.dictionaryapi.dev/api/v2/entries/en/";
-
+// returns a json with a single 5 letter word in the 'moderately common' difficulty category. E.g. {"apple"}
 const randomWordURL = "https://random-word-api.herokuapp.com/word?length=5&number=1&diff=3";
+
+let allowedWords;
+
+async function initAllowedWordList() {
+    try {
+        const response = await fetch('words.txt');
+        
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+        const data = await response.text();
+
+        allowedWords = new Set(
+            data.split(/\r?\n/)
+                .map(word => word.trim().toUpperCase())
+                .filter(word => word.length > 0) // Skip empty lines
+        );
+
+        console.log(`Loaded ${allowedWords.size} allowed words.`);
+    } catch (err) {
+        console.error("Error loading allowed words file:", err);
+    }
+}
 
 // ----------------------------
 // Board + Keyboard Creation
@@ -123,6 +142,7 @@ function initGame() {
     currentRow = 0;
     currentCol = 0;
     targetWord = "";
+    isTargetWordLoading = true;
     clearAnimationTimeouts();
     clearMessage(true);
     createBoard();
@@ -132,13 +152,21 @@ function initGame() {
     .then(response => response.json())
     .then(data => {
         if (thisGameToken !== activeGameToken) return;
-        targetWord = data[0].toUpperCase();
+        if (!Array.isArray(data) || typeof data[0] !== "string") {
+            throw new Error("Unexpected random-word API response format.");
+        }
+
+        targetWord = data[0].trim().toUpperCase();
+        isTargetWordLoading = false;
         console.log("Target Word:", targetWord);
     })
     .catch(error => {
         if (thisGameToken !== activeGameToken) return;
         console.error("Error fetching target word:", error);
-        targetWord = "APPLE"; // Fallback word
+        // Keep game playable if the API is unavailable.
+        targetWord = "APPLE";
+        isTargetWordLoading = false;
+        showMessage("Using backup word");
     });
 
 }
@@ -212,29 +240,21 @@ function lockCurrentRow() {
 // ----------------------------
 
 async function isRealWord(word){
-    const url = dictionaryURL + word.toLowerCase();
-    try {
-        const response = await fetch(url);
-
-        if (!response.ok || response.status === 404)
-            return false;
-
-        const data = await response.json();
-        if (data.title && data.title === "No Definitions Found") {
-            return false;
-        }
-        return true;
-    } catch (error) {
-        console.error("Error checking word validity:", error);
-        return false;
-
-    }
+    return allowedWords.has(word);
 }
 
 async function submitGuess() {
     if (gameOver) return;
+    if (isTargetWordLoading) {
+        showMessage("Loading word...");
+        return;
+    }
     if (!targetWord) {
         showMessage("Loading word...");
+        return;
+    }
+    if (!allowedWords) {
+        showMessage("Loading word list...");
         return;
     }
 
@@ -444,4 +464,5 @@ document.getElementById("reload").addEventListener("click", () => {
 
 createKeyboard();
 registerInputHandlers();
+initAllowedWordList();
 initGame();
