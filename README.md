@@ -1,164 +1,62 @@
-﻿# Wordle Clone (HTML • CSS • JavaScript)
+# Wordle React
 
-A fully interactive Wordle clone built from scratch using vanilla **HTML**, **CSS**, and **JavaScript**.
-This project aims to recreate the Wordle gameplay experience including:
+A Wordle clone rebuilt with React + Vite.
 
-* Random 5-letter word generation via API
-* Word validation using a dictionary API
-* Animated tile flips, shakes, pops, and win bounces
-* On-screen keyboard with smart coloring
-* Clean board structure with rows/tiles modeled after the real game
-* Simple, readable, and extensible code
+## Features
 
----
+- 6x5 Wordle gameplay with duplicate-letter aware scoring.
+- Physical keyboard and on-screen keyboard input.
+- Random target word fetching with stale-request guard.
+- Local word-list validation from `public/words.txt`.
+- Smooth staggered tile reveals, row shake, tile pop, and win bounce animations.
+- New game reset flow that clears pending animation/message timers.
 
-## 🎮 Features
+## Run Locally
 
-### ✔ Core Gameplay
+1. Install dependencies:
 
-* Six attempts to guess a five-letter target word
-* Real Wordle-style evaluation (correct, present, absent)
-* Duplicate-letter handling with frequency accounting
-* Win and loss detection
-* Row locking and guess submission rules
+```bash
+npm install
+```
 
-### ✔ Animations
+2. Start the dev server:
 
-* Tile **pop** on insert
-* Row **shake** on invalid word
-* Tile **flip** reveal with staggered timing
-* **Bounce** animation on winning guesses
+```bash
+npm run dev
+```
 
-### ✔ Keyboard Interaction
+3. Build production assets:
 
-* Physical keyboard input
-* On-screen clickable keyboard
-* Smart coloring based on letter correctness
-* Priority system ensures correct > present > absent states
+```bash
+npm run build
+```
 
-### ✔ API Integration
+4. Preview the production build:
 
-* **Random-word API** fetches a fresh 5-letter word each game
-* **Dictionary API** validates guesses
-* Graceful fallback if the API fails
+```bash
+npm run preview
+```
 
----
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 /
-├── index.html     # Page structure + root containers
-├── styles.css     # Board layout, tiles, animations, keyboard styling
-├── script.js      # Game logic, animations, API integration, UI updates
-└── README.md      # Project documentation
+├── index.html
+├── package.json
+├── styles.css
+├── public/
+│   └── words.txt
+├── src/
+│   ├── App.jsx
+│   └── main.jsx
+└── vite.config.js
 ```
 
----
+## Notes
 
-## 🚀 Getting Started
+- If the random word API is unavailable, the game falls back to a backup word.
+- If `words.txt` fails to load, the app stays playable and accepts any 5-letter guess.
 
-### 1. Clone the Repository
+## License
 
-```bash
-git clone https://github.com/yourusername/your-repo-name.git
-cd your-repo-name
-```
-
-### 2. Open the Game
-
-Simply open `index.html` in any modern browser:
-
-```bash
-open index.html
-```
-
-No build steps. No dependencies.
-Fully client-side.
-
----
-
-## 🔧 How It Works
-
-### **Board Creation**
-
-The board is made of 6 rows × 5 tiles. Each row is a flex container.
-Tiles are stored in a global `tiles` NodeList for fast indexing.
-
-### **Input Handling**
-
-Both physical keyboard events and on-screen keyboard clicks call:
-
-* `insertLetter(letter)`
-* `deleteLetter()`
-* `submitGuess()`
-
-### **Evaluation Algorithm**
-
-A two-pass approach:
-
-1. Mark all **correct (green)**
-2. Mark **present (yellow)** using remaining letter frequencies
-
-### **Animations**
-
-Animations are implemented using CSS `@keyframes` classes applied dynamically:
-
-* `pop` on letter insert
-* `shake` for invalid rows
-* `flip` on reveal
-* `bounce` for win celebration
-
-### **Keyboard Updating**
-
-Letters are assigned a priority:
-
-```
-absent < present < correct
-```
-
-A letter never downgrades to a weaker state.
-
----
-
-## 🌐 APIs Used
-
-### Random 5-Letter Word
-
-```
-https://random-word-api.vercel.app/api?words=1&length=5&type=capitalized
-```
-
-### Dictionary Validation
-
-```
-https://api.dictionaryapi.dev/api/v2/entries/en/<word>
-```
-
----
-
-## 🧩 Customization
-
-You can easily tweak the game:
-
-* Change colors in `styles.css`
-* Modify animations
-* Replace APIs
-* Add hard mode rules
-* Add statistics, streaks, or stored state
-
-The codebase is designed to be accessible and modifiable.
-
----
-
-## 📸 Screenshot
-
-<!-- screenshot -->
-![Wordle Clone Screenshot](wordle_img.png)
-
-
----
-📜 License
-
-MIT License.
-Feel free to use, modify, and build upon this project.
+MIT

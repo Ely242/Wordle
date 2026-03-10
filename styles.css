@@ -10,6 +10,9 @@
     --present: #c9b458;
     --absent: #7d8184;
     --board-gap: 6px;
+    --tile-size: clamp(68px, 13vw, 80px);
+    --tile-font-size: clamp(1.7rem, 7.4vw, 2.2rem);
+    --flip-duration: 560ms;
 }
 
 * {
@@ -19,7 +22,8 @@
 }
 
 html,
-body {
+body,
+#root {
     height: 100%;
 }
 
@@ -69,7 +73,7 @@ main {
     text-transform: uppercase;
     letter-spacing: 0.04em;
     cursor: pointer;
-    transition: background-color 130ms ease;
+    transition: background-color 170ms ease, transform 140ms ease;
 }
 
 #reload:hover {
@@ -78,6 +82,7 @@ main {
 
 #reload:active {
     background: #e5e5e5;
+    transform: translateY(1px);
 }
 
 #board {
@@ -92,16 +97,17 @@ main {
 .row {
     display: flex;
     gap: var(--board-gap);
-    perspective: 1000px;
+    perspective: 1200px;
+    transform-style: preserve-3d;
 }
 
 .tile {
-    width: clamp(68px, 13vw, 80px);
-    height: clamp(68px, 13vw, 80px);
+    width: var(--tile-size);
+    height: var(--tile-size);
     border: 2px solid var(--border);
     background: var(--tile-bg);
     color: var(--text);
-    font-size: clamp(1.7rem, 7.4vw, 2.2rem);
+    font-size: var(--tile-font-size);
     font-weight: 700;
     line-height: 1;
     text-transform: uppercase;
@@ -109,7 +115,9 @@ main {
     align-items: center;
     justify-content: center;
     transform-style: preserve-3d;
-    transition: border-color 140ms ease, background-color 140ms ease;
+    backface-visibility: hidden;
+    will-change: transform;
+    transition: border-color 180ms ease, background-color 180ms ease, color 180ms ease;
 }
 
 .tile.filled {
@@ -134,13 +142,22 @@ main {
     color: #ffffff;
 }
 
+.tile.pop {
+    animation: tile-pop 150ms cubic-bezier(0.22, 1.22, 0.42, 1);
+}
+
+.tile.reveal {
+    animation: tile-flip var(--flip-duration) cubic-bezier(0.22, 0.86, 0.32, 1) both;
+    animation-delay: var(--flip-delay, 0ms);
+}
+
 #message {
-    min-height: 16px;
+    min-height: 18px;
     text-align: center;
     font-size: 0.9rem;
     color: #5d6063;
     opacity: 0;
-    transition: opacity 200ms ease;
+    transition: opacity 220ms ease;
 }
 
 #message.visible {
@@ -154,27 +171,6 @@ main {
     gap: 6px;
     width: 100%;
     touch-action: manipulation;
-}
-
-@media (max-width: 768px) {
-    main {
-        height: 100svh;
-    }
-
-    #board {
-        margin: auto auto 0;
-    }
-
-    .tile {
-        width: clamp(54px, 16vw, 72px);
-        height: clamp(54px, 16vw, 72px);
-        font-size: clamp(1.65rem, 7.4vw, 2.08rem);
-    }
-
-    #keyboard {
-        margin-top: auto;
-        padding-bottom: max(env(safe-area-inset-bottom), 2px);
-    }
 }
 
 .key-row {
@@ -200,6 +196,11 @@ main {
     cursor: pointer;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
+    transition: transform 120ms ease, background-color 170ms ease, color 170ms ease;
+}
+
+.key:active {
+    transform: translateY(1px);
 }
 
 .key.large {
@@ -223,48 +224,25 @@ main {
     color: #ffffff;
 }
 
-@keyframes pop {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.08); }
-    100% { transform: scale(1); }
-}
+@media (max-width: 768px) {
+    main {
+        height: 100svh;
+    }
 
-.tile.pop {
-    animation: pop 110ms ease-out;
-}
+    #board {
+        margin: auto auto 0;
+    }
 
-@keyframes shake {
-    0% { transform: translateX(0); }
-    20% { transform: translateX(-6px); }
-    40% { transform: translateX(6px); }
-    60% { transform: translateX(-6px); }
-    80% { transform: translateX(6px); }
-    100% { transform: translateX(0); }
-}
+    .tile {
+        width: clamp(54px, 16vw, 72px);
+        height: clamp(54px, 16vw, 72px);
+        font-size: clamp(1.65rem, 7.4vw, 2.08rem);
+    }
 
-.row.shake {
-    animation: shake 600ms ease;
-}
-
-@keyframes flip {
-    0% { transform: rotateX(0); }
-    50% { transform: rotateX(90deg); }
-    100% { transform: rotateX(0); }
-}
-
-.tile.flip {
-    animation: flip 500ms ease-in-out forwards;
-}
-
-@keyframes bounce {
-    0% { transform: translateY(0); }
-    30% { transform: translateY(-16px); }
-    60% { transform: translateY(4px); }
-    100% { transform: translateY(0); }
-}
-
-.row.bounce {
-    animation: bounce 700ms ease;
+    #keyboard {
+        margin-top: auto;
+        padding-bottom: max(env(safe-area-inset-bottom), 2px);
+    }
 }
 
 @media (max-width: 420px) {
@@ -347,5 +325,97 @@ main {
     .key {
         min-height: 50px;
         font-size: clamp(0.92rem, 2.8vw, 1rem);
+    }
+}
+
+@keyframes tile-pop {
+    0% {
+        transform: scale(1);
+    }
+    55% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes tile-flip {
+    0% {
+        transform: rotateX(0deg);
+        background: var(--tile-bg);
+        border-color: var(--tile-filled-border);
+        color: var(--text);
+    }
+    45% {
+        transform: rotateX(-90deg);
+        background: var(--tile-bg);
+        border-color: var(--tile-filled-border);
+        color: var(--text);
+    }
+    55% {
+        transform: rotateX(-90deg);
+    }
+    100% {
+        transform: rotateX(0deg);
+    }
+}
+
+@keyframes row-shake {
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+    18% {
+        transform: translateX(-7px);
+    }
+    34% {
+        transform: translateX(7px);
+    }
+    50% {
+        transform: translateX(-6px);
+    }
+    66% {
+        transform: translateX(6px);
+    }
+    82% {
+        transform: translateX(-3px);
+    }
+}
+
+.row.shake {
+    animation: row-shake 560ms cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+@keyframes row-bounce {
+    0% {
+        transform: translateY(0);
+    }
+    28% {
+        transform: translateY(-16px);
+    }
+    54% {
+        transform: translateY(5px);
+    }
+    74% {
+        transform: translateY(-3px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+.row.bounce {
+    animation: row-bounce 720ms cubic-bezier(0.2, 0.8, 0.25, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 1ms !important;
+        scroll-behavior: auto !important;
     }
 }
