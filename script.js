@@ -455,7 +455,10 @@ function insertLetter(letter){
 
 // Reload button handler
 document.getElementById("reload").addEventListener("click", () => {
-    initGame();
+    // Sleep to prevent issues
+    setTimeout(() => {
+        initGame();
+    }, 1000);
 });
 
 // ----------------------------
