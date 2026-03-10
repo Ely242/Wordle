@@ -143,15 +143,12 @@ function initGame() {
     currentCol = 0;
     targetWord = "";
     isTargetWordLoading = true;
-    clearAnimationTimeouts();
-    clearMessage(true);
-    createBoard();
-    resetKeyboardStatus();
 
     fetch(randomWordURL)
     .then(response => response.json())
     .then(data => {
         if (thisGameToken !== activeGameToken) return;
+
         if (!Array.isArray(data) || typeof data[0] !== "string") {
             throw new Error("Unexpected random-word API response format.");
         }
@@ -169,20 +166,37 @@ function initGame() {
         showMessage("Using backup word");
     });
 
+    clearAnimationTimeouts();
+    clearMessage(true);
+    createBoard();
+    resetKeyboardStatus();
+
+
+}
+
+function isEditableElement(element) {
+    if (!element) return false;
+    const tagName = element.tagName;
+    return element.isContentEditable || tagName === "INPUT" || tagName === "TEXTAREA" || tagName === "SELECT";
 }
 
 function handlePhysicalKey(event) {
+    if (isEditableElement(event.target)) return;
+
     const key = event.key.toUpperCase();
 
     if (key === "BACKSPACE") {
+        event.preventDefault();
         deleteLetter();
         return;
     }
     else if (key === "ENTER") {
+        event.preventDefault();
         submitGuess();
         return;
     }
     else if (/^[A-Z]$/.test(key)) {
+        event.preventDefault();
         insertLetter(key);
         return;
     }
@@ -245,11 +259,7 @@ async function isRealWord(word){
 
 async function submitGuess() {
     if (gameOver) return;
-    if (isTargetWordLoading) {
-        showMessage("Loading word...");
-        return;
-    }
-    if (!targetWord) {
+    if (isTargetWordLoading || !targetWord) {
         showMessage("Loading word...");
         return;
     }
@@ -454,11 +464,12 @@ function insertLetter(letter){
 }
 
 // Reload button handler
-document.getElementById("reload").addEventListener("click", () => {
-    // Sleep to prevent issues
-    setTimeout(() => {
-        initGame();
-    }, 1000);
+const reloadButton = document.getElementById("reload");
+
+reloadButton.addEventListener("click", () => {
+    // Avoid Enter re-triggering the focused button when submitting guesses.
+    reloadButton.blur();
+    initGame();
 });
 
 // ----------------------------
