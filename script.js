@@ -22,7 +22,7 @@ const keyRows = [
 ];
 
 // returns a json with a single 5 letter word in the 'moderately common' difficulty category. E.g. {"apple"}
-const randomWordURL = "https://random-word-api.herokuapp.com/word?length=5&number=1&diff=3";
+const randomWordURL = "https://random-word-api.herokuapp.com/word?length=5&number=1&diff=2";
 
 let allowedWords;
 
