@@ -1,4 +1,4 @@
-# Wordle React
+# Wordle
 
 A Wordle clone built with React + Vite.
 
