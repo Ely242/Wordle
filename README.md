@@ -1,15 +1,15 @@
-# Wordle React
+# Wordle
 
-A Wordle clone rebuilt with React + Vite.
+A Wordle clone built with React + Vite.
 
 ## Features
 
-- 6x5 Wordle gameplay with duplicate-letter aware scoring.
+- 6x5 Wordle gameplay
 - Physical keyboard and on-screen keyboard input.
 - Random target word fetching with stale-request guard.
 - Local word-list validation from `public/words.txt`.
 - Smooth staggered tile reveals, row shake, tile pop, and win bounce animations.
-- New game reset flow that clears pending animation/message timers.
+- Game can be reset
 
 ## Run Locally
 
@@ -68,3 +68,4 @@ npm run preview
 ## License
 
 MIT
+
