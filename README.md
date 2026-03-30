@@ -25,6 +25,14 @@ npm install
 npm run dev
 ```
 
+You can also use:
+
+```bash
+npm start
+```
+
+Do not open `index.html` directly in the browser. This project uses Vite to transform `src/main.jsx`, so the app must be served through the Vite dev server or preview server.
+
 3. Build production assets:
 
 ```bash
