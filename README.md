@@ -4,12 +4,12 @@ A Wordle clone built with React + Vite.
 
 ## Features
 
-- 6x5 Wordle gameplay
+- 6x5 Wordle gameplay.
 - Physical keyboard and on-screen keyboard input.
 - Random target word fetching with stale-request guard.
 - Local word-list validation from `public/words.txt`.
 - Smooth staggered tile reveals, row shake, tile pop, and win bounce animations.
-- Game can be reset
+- New Game button to restart instantly.
 
 ## Run Locally
 
@@ -45,13 +45,25 @@ npm run build
 npm run preview
 ```
 
+## Repository Hygiene
+
+- `node_modules/`, `dist/`, and `.vite/` are generated artifacts and should not be committed.
+- If they were committed previously, remove them from git tracking with:
+
+```bash
+git rm -r --cached node_modules dist
+```
+
 ## Project Structure
 
 ```
 /
 ├── index.html
+├── .gitignore
 ├── package.json
+├── package-lock.json
 ├── styles.css
+├── wordle_img.png
 ├── public/
 │   └── words.txt
 ├── src/
