@@ -1,74 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-
-const MAX_ROWS = 6;
-const MAX_COLS = 5;
-const RANDOM_WORD_URL = "https://random-word-api.herokuapp.com/word?length=5&number=1&diff=2";
-
-const KEY_ROWS = [
-  [..."QWERTYUIOP"],
-  [..."ASDFGHJKL"],
-  ["ENTER", ...[..."ZXCVBNM"], "⌫"]
-];
-
-const STATUS_PRIORITY = {
-  absent: 1,
-  present: 2,
-  correct: 3
-};
-
-function createEmptyGrid(fillValue = "") {
-  return Array.from({ length: MAX_ROWS }, () => Array(MAX_COLS).fill(fillValue));
-}
-
-function evaluateGuess(guess, target) {
-  const result = Array(MAX_COLS).fill("absent");
-  const letterCount = {};
-
-  for (const ch of target) {
-    letterCount[ch] = (letterCount[ch] || 0) + 1;
-  }
-
-  for (let i = 0; i < MAX_COLS; i += 1) {
-    if (guess[i] === target[i]) {
-      result[i] = "correct";
-      letterCount[guess[i]] -= 1;
-    }
-  }
-
-  for (let i = 0; i < MAX_COLS; i += 1) {
-    if (result[i] === "correct") continue;
-
-    const ch = guess[i];
-    if (letterCount[ch] > 0) {
-      result[i] = "present";
-      letterCount[ch] -= 1;
-    }
-  }
-
-  return result;
-}
-
-function mergeKeyboardStatuses(previousStatuses, guess, evaluation) {
-  const nextStatuses = { ...previousStatuses };
-
-  for (let i = 0; i < MAX_COLS; i += 1) {
-    const letter = guess[i];
-    const incomingStatus = evaluation[i];
-    const existingStatus = nextStatuses[letter];
-
-    if (!existingStatus || STATUS_PRIORITY[incomingStatus] > STATUS_PRIORITY[existingStatus]) {
-      nextStatuses[letter] = incomingStatus;
-    }
-  }
-
-  return nextStatuses;
-}
-
-function isEditableElement(element) {
-  if (!element) return false;
-  const tagName = element.tagName;
-  return element.isContentEditable || tagName === "INPUT" || tagName === "TEXTAREA" || tagName === "SELECT";
-}
+import GameBoard from "./components/GameBoard";
+import Keyboard from "./components/Keyboard";
+import MessageBar from "./components/MessageBar";
+import TopBar from "./components/TopBar";
+import { KEY_ROWS, MAX_COLS, MAX_ROWS, RANDOM_WORD_URL } from "./constants/game";
+import {
+  createEmptyGrid,
+  evaluateGuess,
+  isEditableElement,
+  mergeKeyboardStatuses
+} from "./utils/gameUtils";
 
 export default function App() {
   const [boardLetters, setBoardLetters] = useState(() => createEmptyGrid(""));
@@ -429,85 +370,20 @@ export default function App() {
 
   return (
     <main>
-      <header id="topbar">
-        <div id="title">Wordle</div>
-        <button id="reload" type="button" onClick={handleReloadClick}>
-          New Game
-        </button>
-      </header>
+      <TopBar onNewGame={handleReloadClick} />
 
-      <div id="board">
-        {boardLetters.map((rowLetters, rowIndex) => {
-          const rowClassName = [
-            "row",
-            shakingRow === rowIndex ? "shake" : "",
-            bouncingRow === rowIndex ? "bounce" : ""
-          ]
-            .filter(Boolean)
-            .join(" ");
+      <GameBoard
+        boardLetters={boardLetters}
+        tileStatuses={tileStatuses}
+        revealRows={revealRows}
+        popTiles={popTiles}
+        shakingRow={shakingRow}
+        bouncingRow={bouncingRow}
+      />
 
-          return (
-            <div key={`row-${rowIndex}`} id={`row-${rowIndex}`} className={rowClassName}>
-              {rowLetters.map((letter, colIndex) => {
-                const status = tileStatuses[rowIndex][colIndex];
-                const tileId = `${rowIndex}-${colIndex}`;
-                const tileClassName = [
-                  "tile",
-                  letter ? "filled" : "",
-                  status,
-                  revealRows[rowIndex] && status ? "reveal" : "",
-                  popTiles[tileId] ? "pop" : ""
-                ]
-                  .filter(Boolean)
-                  .join(" ");
+      <MessageBar message={message} isVisible={isMessageVisible} />
 
-                const style = revealRows[rowIndex] && status
-                  ? { "--flip-delay": `${colIndex * 140}ms` }
-                  : undefined;
-
-                return (
-                  <div key={tileId} className={tileClassName} style={style}>
-                    {letter}
-                  </div>
-                );
-              })}
-            </div>
-          );
-        })}
-      </div>
-
-      <div id="message" aria-live="polite" className={isMessageVisible ? "visible" : ""}>
-        {message}
-      </div>
-
-      <div id="keyboard">
-        {KEY_ROWS.map((rowKeys, rowIndex) => (
-          <div key={`keys-${rowIndex}`} className={`key-row key-row-${rowIndex + 1}`}>
-            {rowKeys.map((label) => {
-              const isLetter = /^[A-Z]$/.test(label);
-              const status = isLetter ? keyStatuses[label] : "";
-              const className = [
-                "key",
-                label === "ENTER" || label === "⌫" ? "large" : "",
-                status
-              ]
-                .filter(Boolean)
-                .join(" ");
-
-              return (
-                <button
-                  key={label}
-                  type="button"
-                  className={className}
-                  onClick={() => handleOnScreenKey(label)}
-                >
-                  {label}
-                </button>
-              );
-            })}
-          </div>
-        ))}
-      </div>
+      <Keyboard keyRows={KEY_ROWS} keyStatuses={keyStatuses} onKeyPress={handleOnScreenKey} />
     </main>
   );
 }
