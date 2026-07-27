@@ -8,8 +8,19 @@ A Wordle clone built with plain HTML, CSS, and JavaScript.
 - Physical keyboard and on-screen keyboard input.
 - Random target word fetching with stale-request guard.
 - Word validation from `public/words.txt`.
-- Smooth staggered tile reveals, row shake, tile pop, and win bounce animations.
+- Refined reveal flow: tile color swaps at flip midpoint, keyboard updates after row reveal completes.
+- Smooth row shake, tile pop, and staggered per-tile win bounce animations.
+- Input lock during reveal animations to prevent accidental mid-turn typing/submits.
 - New Game button to restart instantly.
+- Responsive layout tuned for desktop and mobile with safe-area support.
+- Accessibility improvements: semantic landmarks, status messaging, and keyboard focus-visible states.
+
+## Controls
+
+- Type letters with your physical keyboard or click/tap the on-screen keys.
+- `Enter` submits a 5-letter guess.
+- `Backspace` or `⌫` removes the last letter.
+- `New Game` starts a fresh board and fetches a new target word.
 
 ## Run Locally
 
@@ -53,7 +64,7 @@ Then open the shown local URL in your browser.
 ## Notes
 
 - If the random word API is unavailable, the game falls back to a backup word.
-- If `public/words.txt` fails to load, the game remains playable and accepts any 5-letter guess.
+- If `public/words.txt` fails to load (for example when opened with strict `file://` restrictions), the game remains playable and accepts any 5-letter guess.
 
 ## License
 
