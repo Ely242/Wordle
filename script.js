@@ -25,10 +25,11 @@ const keyRows = [
 const randomWordURL = "https://random-word-api.herokuapp.com/word?length=5&number=1&diff=2";
 
 let allowedWords;
+let allowedWordsLoadFailed = false;
 
 async function initAllowedWordList() {
     try {
-        const response = await fetch('words.txt');
+        const response = await fetch('public/words.txt');
         
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
@@ -39,10 +40,14 @@ async function initAllowedWordList() {
                 .map(word => word.trim().toUpperCase())
                 .filter(word => word.length > 0) // Skip empty lines
         );
+        allowedWordsLoadFailed = false;
 
         console.log(`Loaded ${allowedWords.size} allowed words.`);
     } catch (err) {
         console.error("Error loading allowed words file:", err);
+        // Keep gameplay available when loaded from file:// or if fetch fails.
+        allowedWords = new Set();
+        allowedWordsLoadFailed = true;
     }
 }
 
@@ -254,6 +259,7 @@ function lockCurrentRow() {
 // ----------------------------
 
 async function isRealWord(word){
+    if (allowedWordsLoadFailed) return /^[A-Z]{5}$/.test(word);
     return allowedWords.has(word);
 }
 
