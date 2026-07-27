@@ -6,7 +6,7 @@ A Wordle clone built with plain HTML, CSS, and JavaScript.
 
 - 6x5 Wordle gameplay.
 - Physical keyboard and on-screen keyboard input.
-- Random target word fetching with stale-request guard.
+- Random target word selection from `public/answers.txt`.
 - Word validation from `public/words.txt`.
 - Refined reveal flow: tile color swaps at flip midpoint, keyboard updates after row reveal completes.
 - Smooth row shake, tile pop, and staggered per-tile win bounce animations.
@@ -53,9 +53,11 @@ Then open the shown local URL in your browser.
 |-- index.html
 |-- styles.css
 |-- script.js
-|-- wordle-logo.png
 |-- public/
-|   `-- words.txt
+|   |-- answers.txt
+|   |-- words.txt
+|   `-- assets/
+|       `-- wordle-logo.png
 |-- .gitignore
 |-- LICENSE
 `-- README.md
@@ -64,6 +66,7 @@ Then open the shown local URL in your browser.
 ## Notes
 
 - If the random word API is unavailable, the game falls back to a backup word.
+- If `public/answers.txt` fails to load, the game uses a backup answer.
 - If `public/words.txt` fails to load (for example when opened with strict `file://` restrictions), the game remains playable and accepts any 5-letter guess.
 
 ## License

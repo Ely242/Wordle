@@ -37,12 +37,12 @@ const FLIP_DURATION = 560;
 const FLIP_STAGGER = 300;
 const totalRevealDuration = () => (MAX_COLS - 1) * FLIP_STAGGER + FLIP_DURATION;
 
-// Random-word API: single 5-letter word, moderately common. Response: ["apple"]
-const randomWordURL = "https://random-word-api.herokuapp.com/word?length=5&number=1&diff=2";
 const FALLBACK_WORD = "APPLE";
 
 let allowedWords;
 let allowedWordsLoadFailed = false;
+let answerWords = [];
+let answerListPromise = null;
 
 // ----------------------------
 // Word list loader
@@ -67,6 +67,40 @@ async function initAllowedWordList() {
         allowedWords = new Set();
         allowedWordsLoadFailed = true;
     }
+}
+
+async function initAnswerWordList() {
+    if (answerListPromise) return answerListPromise;
+
+    answerListPromise = fetch("public/answers.txt")
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            return response.text();
+        })
+        .then(data => {
+            answerWords = data
+                .split(/\r?\n/)
+                .map(word => word.trim().toUpperCase())
+                .filter(word => /^[A-Z]{5}$/.test(word));
+
+            if (answerWords.length === 0) {
+                throw new Error("answers.txt did not contain any valid 5-letter words.");
+            }
+
+            console.log(`Loaded ${answerWords.length} answer words.`);
+        })
+        .catch(err => {
+            console.error("Error loading answers file:", err);
+            answerWords = [];
+        });
+
+    return answerListPromise;
+}
+
+function pickRandomAnswer() {
+    if (answerWords.length === 0) return "";
+    const index = Math.floor(Math.random() * answerWords.length);
+    return answerWords[index];
 }
 
 // ----------------------------
@@ -237,20 +271,23 @@ function initGame() {
     createBoard();
     resetKeyboardStatus();
 
-    fetch(randomWordURL)
-        .then(response => response.json())
-        .then(data => {
+    initAnswerWordList()
+        .then(() => {
             if (thisGameToken !== activeGameToken) return;
-            if (!Array.isArray(data) || typeof data[0] !== "string") {
-                throw new Error("Unexpected random-word API response format.");
+
+            const nextWord = pickRandomAnswer();
+            if (nextWord) {
+                targetWord = nextWord;
+                isTargetWordLoading = false;
+                return;
             }
-            targetWord = data[0].trim().toUpperCase();
+
+            targetWord = FALLBACK_WORD;
             isTargetWordLoading = false;
-            console.log("Target Word:", targetWord);
+            showMessage("Using backup word");
         })
-        .catch(error => {
+        .catch(() => {
             if (thisGameToken !== activeGameToken) return;
-            console.error("Error fetching target word:", error);
             targetWord = FALLBACK_WORD;
             isTargetWordLoading = false;
             showMessage("Using backup word");
@@ -483,4 +520,5 @@ reloadButton.addEventListener("click", () => {
 createKeyboard();
 registerInputHandlers();
 initAllowedWordList();
+initAnswerWordList();
 initGame();
