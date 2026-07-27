@@ -2,11 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Wordle</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#ffffff" />
+    <title>Wordle by Ely</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="shortcut icon" href="wordle-logo.png" type="image/x-icon" />
 </head>
 <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <main>
+        <header id="topbar">
+            <h1 id="title">Wordle</h1>
+            <button id="reload" type="button" aria-label="Start a new game">New Game</button>
+        </header>
+
+        <section id="board" aria-label="Guess board"></section>
+
+        <div id="message" role="status" aria-live="polite"></div>
+
+        <section id="keyboard" aria-label="On-screen keyboard"></section>
+    </main>
+
+    <script src="script.js"></script>
 </body>
 </html>

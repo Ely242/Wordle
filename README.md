@@ -1,81 +1,59 @@
 # Wordle
 
-A Wordle clone built with React + Vite.
+A Wordle clone built with plain HTML, CSS, and JavaScript.
 
 ## Features
 
 - 6x5 Wordle gameplay.
 - Physical keyboard and on-screen keyboard input.
 - Random target word fetching with stale-request guard.
-- Local word-list validation from `public/words.txt`.
+- Word validation from `public/words.txt`.
 - Smooth staggered tile reveals, row shake, tile pop, and win bounce animations.
 - New Game button to restart instantly.
 
 ## Run Locally
 
-1. Install dependencies:
+No build step is required.
+
+Option 1: Open `index.html` directly.
+
+- The game still works if local file loading blocks `public/words.txt`; in that case it accepts any 5-letter guess.
+
+Option 2 (recommended): Serve the folder over HTTP.
+
+From this project root, run one of these:
 
 ```bash
-npm install
+python -m http.server 8000
 ```
 
-2. Start the dev server:
+or
 
 ```bash
-npm run dev
+npx serve .
 ```
 
-You can also use:
-
-```bash
-npm start
-```
-
-Do not open `index.html` directly in the browser. This project uses Vite to transform `src/main.jsx`, so the app must be served through the Vite dev server or preview server.
-
-3. Build production assets:
-
-```bash
-npm run build
-```
-
-4. Preview the production build:
-
-```bash
-npm run preview
-```
-
-## Repository Hygiene
-
-- `node_modules/`, `dist/`, and `.vite/` are generated artifacts and should not be committed.
-- If they were committed previously, remove them from git tracking with:
-
-```bash
-git rm -r --cached node_modules dist
-```
+Then open the shown local URL in your browser.
 
 ## Project Structure
 
 ```
 /
-├── index.html
-├── .gitignore
-├── package.json
-├── package-lock.json
-├── styles.css
-├── wordle_img.png
-├── public/
-│   └── words.txt
-├── src/
-│   ├── App.jsx
-│   └── main.jsx
-└── vite.config.js
+|-- index.html
+|-- styles.css
+|-- script.js
+|-- wordle-logo.png
+|-- public/
+|   `-- words.txt
+|-- .gitignore
+|-- LICENSE
+`-- README.md
 ```
 
 ## Notes
 
 - If the random word API is unavailable, the game falls back to a backup word.
-- If `words.txt` fails to load, the app stays playable and accepts any 5-letter guess.
+- If `public/words.txt` fails to load, the game remains playable and accepts any 5-letter guess.
 
 ## License
 
