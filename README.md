@@ -1,6 +1,6 @@
 # Wordle
 
-A Wordle clone built with plain HTML, CSS, and JavaScript.
+A Wordle clone built with HTML, CSS, and JavaScript.
 
 ## Features
 
