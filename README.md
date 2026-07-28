@@ -2,6 +2,17 @@
 
 A Wordle clone built with plain HTML, CSS, and JavaScript.
 
+<table>
+  <tr>
+    <td align="center"><b>Light Mode</b></td>
+    <td align="center"><b>Dark Mode</b></td>
+  </tr>
+  <tr>
+    <td><img width="280" alt="Light Mode Screenshot" src="public/wordle-lightmode-screenshot.png" /></td>
+    <td><img width="280" alt="Dark Mode Screenshot" src="public/wordle-darkmode-screenshot.png" /></td>
+  </tr>
+</table>
+
 ## Features
 
 - 6x5 Wordle gameplay.
@@ -13,6 +24,7 @@ A Wordle clone built with plain HTML, CSS, and JavaScript.
 - Input lock during reveal animations to prevent accidental mid-turn typing/submits.
 - New Game button to restart instantly.
 - Responsive layout tuned for desktop and mobile with safe-area support.
+- Tobble button for switching between light and dark mode.
 - Accessibility improvements: semantic landmarks, status messaging, and keyboard focus-visible states.
 
 ## Controls

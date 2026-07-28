@@ -12,10 +12,10 @@
     --tile-bg: #ffffff;
     --key-bg: #d3d6da;
     --key-bg-hover: #c4c7cc;
-    --key-text: #1a1a1b;
+    --key-text: #000000;
     --correct: #6aaa64;
     --present: #c9b458;
-    --absent: #7d8184;
+    --absent: #787c7e;
     --on-color: #ffffff;
 
     /* Bahamian aquamarine accent */
@@ -25,10 +25,9 @@
 
     /* Layout tokens */
     --board-gap: 6px;
-    --tile-size: clamp(58px, 12.5vw, 74px);
-    --tile-font-size: clamp(1.55rem, 6.8vw, 2rem);
-    --tile-radius: 4px;
-    --key-radius: 6px;
+    --tile-size: 62px;
+    --tile-font-size: 2rem;
+    --key-radius: 4px;
 
     /* Motion */
     --flip-duration: 560ms;
@@ -115,7 +114,7 @@ main {
     border-radius: 999px;
     padding: 9px 16px;
     font: inherit;
-    font-size: 0.78rem;
+    font-size: 1rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -137,10 +136,84 @@ main {
     transform: translateY(1px);
 }
 
+#darkmode-toggle-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+#icon-sun,
+#icon-moon {
+    color: var(--text-muted);
+    flex-shrink: 0;
+    transition: color 200ms ease;
+}
+
+#darkmode-toggle-label {
+    width: 40px;
+    height: 20px;
+    position: relative;
+    display: inline-block;
+    background: var(--border);
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: inset 0px 5px 15px rgba(0, 0, 0, 0.4), inset 0px -5px 15px rgba(255, 255, 255, 0.4);
+}
+
+#darkmode-toggle-label::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #ffffff, #e6e6e6);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: transform 200ms ease, background-color 200ms ease;
+}
+
+#darkmode-toggle {
+    width: 0;
+    height: 0;
+    visibility: hidden;
+}
+
+#darkmode-toggle:checked + #darkmode-toggle-label {
+    background: var(--accent);
+}
+
+#darkmode-toggle:checked + #darkmode-toggle-label::after {
+    transform: translateX(20px);
+    background: linear-gradient(145deg, #4fbfa8, #2c7a6b);
+}
+
+body:has(#darkmode-toggle:checked) {
+    --key-bg: #818384;
+    --key-bg-hover: #939495;
+    --key-text: #f8f8f8;
+    --present: #b59f3b;
+    --absent: #3a3a3c;
+    --correct: #548d4e;
+    --border: #3a3a3c;
+    --border-strong: #565758;
+    --divider: #3a3a3c;
+    --tile-bg: #121213;
+    --bg: #121213;
+    --text: #ffffff;
+    --text-muted: #818384;
+    --surface: #121213;
+}
+
+
+
+
 /* -------------------- Board -------------------- */
 #board {
     margin: 0 auto;
-    width: fit-content;
+    align-self: center;
+    height: 420px;
+    min-width: min(250px, 100vw);
     max-width: 100%;
     display: flex;
     flex-direction: column;
@@ -160,13 +233,12 @@ main {
     background: var(--tile-bg);
     color: var(--text);
     font-size: var(--tile-font-size);
-    font-weight: 800;
+    font-weight: bold;
     line-height: 1;
     text-transform: uppercase;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: var(--tile-radius);
     transform-style: preserve-3d;
     backface-visibility: hidden;
     will-change: transform;
@@ -275,20 +347,26 @@ main {
 .key {
     flex: 1;
     min-width: 0;
-    min-height: clamp(52px, 7.6vh, 60px);
+    min-height: clamp(58px, 7.6vh, 60px);
     border: none;
     border-radius: var(--key-radius);
+    line-height: 1.15;
     background: var(--key-bg);
     color: var(--key-text);
-    font-size: clamp(0.98rem, 2.9vw, 1.08rem);
-    font-weight: 700;
+    font-size: 1.25rem;
+    font-weight: bold;
     cursor: pointer;
     user-select: none;
-    -webkit-tap-highlight-color: transparent;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.3);
     transition:
         transform 100ms ease,
         background-color 200ms ease,
         color 200ms ease;
+}
+
+.key-special {
+    flex: 1.5;
+    font-size: 0.875rem;
 }
 
 @media (hover: hover) {
@@ -469,7 +547,7 @@ main {
 
 .row.bounce .tile {
     animation: row-bounce 720ms var(--ease-out);
-    animation-delay: calc(var(--bounce-index, 0) * 90ms);
+    animation-delay: calc(var(--bounce-index, 0) * 100ms);
     animation-fill-mode: both;
 }
 

@@ -117,6 +117,8 @@ function createBoard() {
         for (let c = 0; c < MAX_COLS; c++) {
             const tile = document.createElement("div");
             tile.classList.add("tile");
+            const inner = document.createElement("div");
+            tile.appendChild(inner);
             row.appendChild(tile);
         }
         board.appendChild(row);
@@ -132,20 +134,25 @@ function createKeyboard() {
         const row = document.createElement("div");
         row.classList.add("key-row", `key-row-${rowIndex + 1}`);
 
-        if (rowIndex === 2) row.appendChild(createKey("ENTER", { large: true }));
+        if (rowIndex === 2) row.appendChild(createKey("ENTER", { large: true, special: true }));
         letters.forEach(letter => row.appendChild(createKey(letter)));
-        if (rowIndex === 2) row.appendChild(createKey("⌫", { large: true, label: "Backspace" }));
+        if (rowIndex === 2) row.appendChild(createKey("⌫", { large: true, special: true, label: "Backspace", html: '<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" width="20" class="game-icon" data-testid="icon-backspace"><path fill="currentColor" d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H7.07L2.4 12l4.66-7H22v14zm-11.59-2L14 13.41 17.59 17 19 15.59 15.41 12 19 8.41 17.59 7 14 10.59 10.41 7 9 8.41 12.59 12 9 15.59z"></path></svg>' }));
 
         keyboard.appendChild(row);
     });
 }
 
-function createKey(value, { large = false, label } = {}) {
+function createKey(value, { large = false, special = false, label, html } = {}) {
     const key = document.createElement("button");
     key.type = "button";
     key.classList.add("key");
     if (large) key.classList.add("large");
-    key.textContent = value;
+    if (special) key.classList.add("key-special");
+    if (html) {
+        key.innerHTML = html;
+    } else {
+        key.textContent = value;
+    }
     key.dataset.key = value;
     key.setAttribute("aria-label", label || value);
     keyElements.set(value, key);
@@ -220,7 +227,7 @@ function insertLetter(letter) {
     if (currentCol >= MAX_COLS || currentRow >= MAX_ROWS) return;
 
     const tile = tileAt(currentRow, currentCol);
-    tile.textContent = letter;
+    tile.querySelector("div").textContent = letter;
     tile.classList.add("filled");
 
     // retrigger pop
@@ -239,14 +246,14 @@ function deleteLetter() {
 
     currentCol--;
     const tile = tileAt(currentRow, currentCol);
-    tile.textContent = "";
+    tile.querySelector("div").textContent = "";
     tile.classList.remove("filled");
 }
 
 function getCurrentGuess() {
     if (currentCol < MAX_COLS) return "";
     let guess = "";
-    for (let i = 0; i < MAX_COLS; i++) guess += tileAt(currentRow, i).textContent;
+    for (let i = 0; i < MAX_COLS; i++) guess += tileAt(currentRow, i).querySelector("div").textContent;
     return guess;
 }
 
