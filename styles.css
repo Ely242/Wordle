@@ -211,7 +211,7 @@ body:has(#darkmode-toggle:checked) {
 /* -------------------- Board -------------------- */
 #board {
     margin: 0 auto;
-    width: 350px;
+    align-self: center;
     height: 420px;
     min-width: min(250px, 100vw);
     max-width: 100%;
