@@ -296,7 +296,7 @@ main {
         color 200ms ease;
 }
 
-.special-key {
+.key-special {
     flex: 1.5;
     font-size: 0.875rem;
 }
