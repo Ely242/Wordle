@@ -33,9 +33,11 @@ const keyRows = [
 ];
 
 // Motion tokens (kept in sync with styles.css)
-const FLIP_DURATION = 560;
+const FLIP_IN_DURATION = 250;
+const FLIP_OUT_DURATION = 250;
 const FLIP_STAGGER = 300;
-const totalRevealDuration = () => (MAX_COLS - 1) * FLIP_STAGGER + FLIP_DURATION;
+const totalRevealDuration = () =>
+    (MAX_COLS - 1) * FLIP_STAGGER + FLIP_IN_DURATION + FLIP_OUT_DURATION;
 
 const FALLBACK_WORD = "APPLE";
 
@@ -364,20 +366,10 @@ function revealRow(rowIndex, guess, evaluation) {
     isRevealing = true;
 
     for (let i = 0; i < MAX_COLS; i++) {
-        const tile = tileAt(rowIndex, i);
         const delay = i * FLIP_STAGGER;
-
-        tile.style.setProperty("--flip-delay", `${delay}ms`);
-        tile.classList.remove("reveal");
-        // Force reflow so the animation restarts if reveal is re-applied on the same tile.
-        // eslint-disable-next-line no-unused-expressions
-        void tile.offsetWidth;
-        tile.classList.add("reveal");
-
-        // Swap in the color class at the midpoint of the flip, when the tile is edge-on.
         queueAnimationTimeout(() => {
-            tile.classList.add(evaluation[i]);
-        }, delay + FLIP_DURATION / 2);
+            flipTile(rowIndex, i, evaluation[i]);
+        }, delay);
     }
 
     // After the full row finishes revealing, update the keyboard and progress the game.
@@ -385,6 +377,27 @@ function revealRow(rowIndex, guess, evaluation) {
         updateKeyboard(guess, evaluation);
         finishTurn(guess, rowIndex);
     }, totalRevealDuration());
+}
+
+function flipTile(rowIndex, colIndex, status) {
+    const tile = tileAt(rowIndex, colIndex);
+
+    tile.classList.remove("flip-in", "flip-out");
+    // Force reflow so the animation restarts if flip classes are re-applied.
+    // eslint-disable-next-line no-unused-expressions
+    void tile.offsetWidth;
+    tile.classList.add("flip-in");
+
+    queueAnimationTimeout(() => {
+        tile.classList.add(status);
+        tile.classList.remove("flip-in");
+        tile.classList.add("flip-out");
+    }, FLIP_IN_DURATION);
+
+    // Cleanup class name after the visual animation completes.
+    queueAnimationTimeout(() => {
+        tile.classList.remove("flip-out");
+    }, FLIP_IN_DURATION + FLIP_OUT_DURATION);
 }
 
 function finishTurn(guess, rowIndex) {

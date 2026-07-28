@@ -204,9 +204,12 @@ main {
     animation: tile-pop 140ms var(--ease-pop);
 }
 
-.tile.reveal {
-    animation: tile-flip var(--flip-duration) var(--ease-out) both;
-    animation-delay: var(--flip-delay, 0ms);
+.tile.flip-in {
+    animation: tile-flip-in 250ms var(--ease-out) both;
+}
+
+.tile.flip-out {
+    animation: tile-flip-out 250ms var(--ease-out) both;
 }
 
 /* -------------------- Message -------------------- */
@@ -425,11 +428,17 @@ main {
     100% { transform: scale(1); }
 }
 
-@keyframes tile-flip {
+@keyframes tile-flip-in {
     0% {
         transform: rotateX(0deg);
     }
-    50% {
+    100% {
+        transform: rotateX(-90deg);
+    }
+}
+
+@keyframes tile-flip-out {
+    0% {
         transform: rotateX(-90deg);
     }
     100% {
