@@ -2,10 +2,6 @@
 
 A Wordle clone built with HTML, CSS, and JavaScript.
 
-<img width="300" alt="image" src="https://github.com/user-attachments/assets/4aa36e76-3608-498c-88e1-bac85ef1677c" />
-
-
-
 <table>
   <tr>
     <td align="center"><b>Light Mode</b></td>
