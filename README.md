@@ -24,7 +24,7 @@ A Wordle clone built with HTML, CSS, and JavaScript.
 - Input lock during reveal animations to prevent accidental mid-turn typing/submits.
 - New Game button to restart instantly.
 - Responsive layout tuned for desktop and mobile with safe-area support.
-- Tobble button for switching between light and dark mode.
+- Toggle button for switching between light and dark mode.
 - Accessibility improvements: semantic landmarks, status messaging, and keyboard focus-visible states.
 
 ## Controls
@@ -67,6 +67,8 @@ Then open the shown local URL in your browser.
 |-- script.js
 |-- public/
 |   |-- answers.txt
+    |-- wordle-darkmode-screenshot.png
+    |-- wordle-lightmode-screenshot.png
 |   |-- words.txt
 |   `-- assets/
 |       `-- wordle-logo.png
@@ -77,7 +79,6 @@ Then open the shown local URL in your browser.
 
 ## Notes
 
-- If the random word API is unavailable, the game falls back to a backup word.
 - If `public/answers.txt` fails to load, the game uses a backup answer.
 - If `public/words.txt` fails to load (for example when opened with strict `file://` restrictions), the game remains playable and accepts any 5-letter guess.
 
