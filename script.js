@@ -22,6 +22,7 @@ let isRevealing = false;         // Blocks input during tile reveal animation
 let activeGameToken = 0;         // Guards against stale async word fetches
 let animationTimeoutIds = [];
 let messageTimeoutId = null;
+const winMessages = [ "Genius!", "Magnificent!", "Impressive!", "Splendid!", "Great!", "Phew!" ]
 
 // letter -> button element (built once by createKeyboard())
 const keyElements = new Map();
@@ -452,7 +453,7 @@ function updateKeyboardKey(letter, status) {
 // ----------------------------
 function handleWin(rowIndex) {
     gameOver = true;
-    showMessage("You win!");
+    showMessage(winMessages[rowIndex]);
 
     const row = document.getElementById(`row-${rowIndex}`);
     if (!row) return;
