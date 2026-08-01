@@ -364,6 +364,7 @@ body:has(#darkmode-toggle:checked) {
         color 200ms ease;
 }
 
+/* We reduce the font size for special keys such as Enter and Backspace */
 .key-special {
     flex: 1.5;
     font-size: 12px;
