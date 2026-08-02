@@ -28,6 +28,9 @@
     /* Fluid tile: fits 5 tiles across available board width; capped at 62px */
     --tile-size: min(62px, calc((100vw - 52px) / 5));
     --tile-font-size: clamp(1.3rem, calc(var(--tile-size) * 0.5), 2rem);
+    /* Fluid tile: fits 5 tiles across available board width; capped at 62px */
+    --tile-size: min(62px, calc((100vw - 52px) / 5));
+    --tile-font-size: clamp(1.3rem, calc(var(--tile-size) * 0.5), 2rem);
     --key-radius: 4px;
 
     /* Motion */
@@ -213,6 +216,9 @@ body:has(#darkmode-toggle:checked) {
 #board {
     margin: 0 auto;
     align-self: center;
+    height: auto;
+    min-width: min(250px, 100vw);
+    max-width: 100%;
     display: flex;
     flex-direction: column;
     gap: var(--board-gap);
@@ -362,9 +368,10 @@ body:has(#darkmode-toggle:checked) {
         color 200ms ease;
 }
 
+/* We reduce the font size for special keys such as Enter and Backspace */
 .key-special {
     flex: 1.5;
-    font-size: 0.875rem;
+    font-size: 12px;
 }
 
 @media (hover: hover) {
@@ -483,6 +490,175 @@ body:has(#darkmode-toggle:checked) {
 
     .key {
         min-height: 44px;
+        font-size: 0.95rem;
+    }
+}
+
+/* -------------------- Tablet (768px+) -------------------- */
+/* min-height: 600px excludes landscape phones so max-height rules take over there */
+@media (min-width: 768px) and (min-height: 600px) {
+    :root {
+        --board-gap: 8px;
+        --tile-size: 80px;
+        --tile-font-size: 2.4rem;
+        --key-radius: 6px;
+    }
+
+    main {
+        width: min(820px, 100%);
+        gap: 18px;
+        padding:
+            max(env(safe-area-inset-top), 20px)
+            16px
+            max(env(safe-area-inset-bottom), 20px);
+    }
+
+    #topbar {
+        min-height: 68px;
+        padding-bottom: 12px;
+    }
+
+    #title {
+        font-size: 2rem;
+    }
+
+    #reload {
+        padding: 11px 20px;
+        font-size: 1.05rem;
+    }
+
+    #message {
+        min-height: 36px;
+        font-size: 0.98rem;
+    }
+
+    #keyboard {
+        margin-top: 0;
+        gap: 8px;
+    }
+
+    .key-row {
+        gap: 8px;
+    }
+
+    .key-row-2 {
+        padding: 0 22px;
+    }
+
+    .key {
+        min-height: 72px;
+        font-size: 1.4rem;
+    }
+
+    .key-special {
+        font-size: 1rem;
+    }
+
+    .key.large {
+        flex: 1.75;
+        font-size: 1.05rem;
+    }
+}
+
+/* -------------------- Laptop / Desktop (1024px+) -------------------- */
+@media (min-width: 1024px) and (min-height: 600px) {
+    :root {
+        --tile-size: 66px;
+        --tile-font-size: 2rem;
+    }
+
+    main {
+        width: min(960px, 100%);
+        gap: 12px;
+        padding:
+            max(env(safe-area-inset-top), 16px)
+            20px
+            max(env(safe-area-inset-bottom), 12px);
+    }
+
+    #topbar {
+        min-height: 60px;
+        padding-bottom: 8px;
+    }
+
+    #title {
+        font-size: clamp(1.85rem, 1.9vw, 2.1rem);
+    }
+
+    #reload {
+        padding: 9px 18px;
+        font-size: 1rem;
+    }
+
+    #message {
+        min-height: 26px;
+        font-size: 0.88rem;
+    }
+
+    #keyboard {
+        margin-top: 0;
+        gap: 8px;
+    }
+
+    .key-row {
+        gap: 8px;
+    }
+
+    .key-row-2 {
+        padding: 0 30px;
+    }
+
+    .key {
+        min-height: 54px;
+        font-size: 1.12rem;
+    }
+
+    .key-special {
+        font-size: 0.86rem;
+    }
+
+    .key.large {
+        flex: 1.8;
+        font-size: 0.88rem;
+    }
+}
+
+/* -------------------- Wide desktop (1440px+) -------------------- */
+@media (min-width: 1440px) and (min-height: 700px) {
+    :root {
+        --tile-size: 76px;
+        --tile-font-size: 2.3rem;
+    }
+
+    main {
+        width: min(1040px, 100%);
+        gap: 16px;
+        padding:
+            max(env(safe-area-inset-top), 22px)
+            20px
+            max(env(safe-area-inset-bottom), 14px);
+    }
+
+    #topbar {
+        min-height: 64px;
+        padding-bottom: 10px;
+    }
+
+    #message {
+        min-height: 30px;
+        font-size: 0.92rem;
+    }
+
+    .key-row-2 {
+        padding: 0 50px;
+    }
+
+    .key {
+        min-height: 60px;
+        font-size: 1.2rem;
+    }
+
+    .key.large {
         font-size: 0.95rem;
     }
 }
