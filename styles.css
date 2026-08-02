@@ -28,6 +28,9 @@
     /* Fluid tile: fits 5 tiles across available board width; capped at 62px */
     --tile-size: min(62px, calc((100vw - 52px) / 5));
     --tile-font-size: clamp(1.3rem, calc(var(--tile-size) * 0.5), 2rem);
+    /* Fluid tile: fits 5 tiles across available board width; capped at 62px */
+    --tile-size: min(62px, calc((100vw - 52px) / 5));
+    --tile-font-size: clamp(1.3rem, calc(var(--tile-size) * 0.5), 2rem);
     --key-radius: 4px;
 
     /* Motion */
