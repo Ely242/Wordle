@@ -25,12 +25,14 @@
 
     /* Layout tokens */
     --board-gap: 6px;
-    /* Fluid tile: fits 5 tiles across available board width; capped at 62px */
-    --tile-size: min(62px, calc((100vw - 52px) / 5));
+    --kb-gap: 6px;
+    /* Fluid tile: fits 5 tiles across available board width, and 6 rows in the
+       board's available height (via container query units); capped at 62px */
+    --tile-size: min(62px, calc((100vw - 52px) / 5), calc((100cqh - 5 * var(--board-gap)) / 6));
     --tile-font-size: clamp(1.3rem, calc(var(--tile-size) * 0.5), 2rem);
-    /* Fluid tile: fits 5 tiles across available board width; capped at 62px */
-    --tile-size: min(62px, calc((100vw - 52px) / 5));
-    --tile-font-size: clamp(1.3rem, calc(var(--tile-size) * 0.5), 2rem);
+    /* Fluid key: fills the keyboard's own available height, capped at 60px */
+    --key-size: min(60px, calc((100cqh - 2 * var(--kb-gap)) / 3));
+    --key-font-size: clamp(0.75rem, calc(var(--key-size) * 0.33), 1.4rem);
     --key-radius: 4px;
 
     /* Motion */
@@ -69,7 +71,8 @@ body {
 
 main {
     width: min(520px, 100%);
-    min-height: 100dvh;
+    height: 100dvh;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -81,6 +84,7 @@ main {
 
 /* -------------------- Top bar -------------------- */
 #topbar {
+    flex-shrink: 0;
     min-height: 56px;
     display: flex;
     align-items: center;
@@ -214,18 +218,24 @@ body:has(#darkmode-toggle:checked) {
 
 /* -------------------- Board -------------------- */
 #board {
+    flex: 5 1 0;
+    min-height: 0;
+    container-type: size;
     margin: 0 auto;
     align-self: center;
-    height: auto;
-    min-width: min(250px, 100vw);
-    max-width: 100%;
+    /* Explicit width: container-type:size disables shrink-to-fit sizing from children */
+    width: min(calc(5 * var(--tile-size) + 4 * var(--board-gap)), 100%);
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: var(--board-gap);
+    overflow: hidden;
 }
 
 .row {
     display: flex;
+    flex-shrink: 0;
+    justify-content: center;
     gap: var(--board-gap);
     perspective: 1200px;
 }
@@ -233,6 +243,7 @@ body:has(#darkmode-toggle:checked) {
 .tile {
     width: var(--tile-size);
     height: var(--tile-size);
+    flex-shrink: 0;
     border: 2px solid var(--border);
     background: var(--tile-bg);
     color: var(--text);
@@ -290,6 +301,7 @@ body:has(#darkmode-toggle:checked) {
 
 /* -------------------- Message -------------------- */
 #message {
+    flex-shrink: 0;
     min-height: 34px;
     display: flex;
     align-items: center;
@@ -330,10 +342,15 @@ body:has(#darkmode-toggle:checked) {
 
 /* -------------------- Keyboard -------------------- */
 #keyboard {
+    flex: 2 1 0;
+    min-height: 0;
+    container-type: size;
+    overflow: hidden;
     margin-top: 6px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    justify-content: center;
+    gap: var(--kb-gap);
     width: 100%;
     touch-action: manipulation;
 }
@@ -341,6 +358,7 @@ body:has(#darkmode-toggle:checked) {
 .key-row {
     width: 100%;
     display: flex;
+    flex-shrink: 0;
     gap: 6px;
 }
 
@@ -351,13 +369,13 @@ body:has(#darkmode-toggle:checked) {
 .key {
     flex: 1;
     min-width: 0;
-    min-height: clamp(58px, 7.6vh, 60px);
+    min-height: var(--key-size);
     border: none;
     border-radius: var(--key-radius);
     line-height: 1.15;
     background: var(--key-bg);
     color: var(--key-text);
-    font-size: 1.25rem;
+    font-size: var(--key-font-size);
     font-weight: bold;
     cursor: pointer;
     user-select: none;
@@ -454,9 +472,8 @@ body:has(#darkmode-toggle:checked) {
         padding: 0 10px;
     }
 
-    .key {
-        min-height: 48px;
-        font-size: 1rem;
+    :root {
+        --key-size: min(48px, calc((100cqh - 2 * var(--kb-gap)) / 3));
     }
 
     .key.large {
@@ -467,14 +484,8 @@ body:has(#darkmode-toggle:checked) {
 @media (max-height: 760px) {
     :root {
         --board-gap: 5px;
-    }
-
-    #keyboard {
-        gap: 5px;
-    }
-
-    .key {
-        min-height: 48px;
+        --kb-gap: 5px;
+        --key-size: min(48px, calc((100cqh - 2 * var(--kb-gap)) / 3));
     }
 }
 
@@ -488,9 +499,8 @@ body:has(#darkmode-toggle:checked) {
         font-size: 0.82rem;
     }
 
-    .key {
-        min-height: 44px;
-        font-size: 0.95rem;
+    :root {
+        --key-size: min(44px, calc((100cqh - 2 * var(--kb-gap)) / 3));
     }
 }
 
@@ -499,8 +509,10 @@ body:has(#darkmode-toggle:checked) {
 @media (min-width: 768px) and (min-height: 600px) {
     :root {
         --board-gap: 8px;
-        --tile-size: 80px;
-        --tile-font-size: 2.4rem;
+        --kb-gap: 8px;
+        --tile-size: min(80px, calc((100cqh - 5 * var(--board-gap)) / 6));
+        --tile-font-size: clamp(1.3rem, calc(var(--tile-size) * 0.5), 2.4rem);
+        --key-size: min(72px, calc((100cqh - 2 * var(--kb-gap)) / 3));
         --key-radius: 6px;
     }
 
@@ -534,7 +546,6 @@ body:has(#darkmode-toggle:checked) {
 
     #keyboard {
         margin-top: 0;
-        gap: 8px;
     }
 
     .key-row {
@@ -543,11 +554,6 @@ body:has(#darkmode-toggle:checked) {
 
     .key-row-2 {
         padding: 0 22px;
-    }
-
-    .key {
-        min-height: 72px;
-        font-size: 1.4rem;
     }
 
     .key-special {
@@ -563,8 +569,9 @@ body:has(#darkmode-toggle:checked) {
 /* -------------------- Laptop / Desktop (1024px+) -------------------- */
 @media (min-width: 1024px) and (min-height: 600px) {
     :root {
-        --tile-size: 66px;
-        --tile-font-size: 2rem;
+        --tile-size: min(66px, calc((100cqh - 5 * var(--board-gap)) / 6));
+        --tile-font-size: clamp(1.3rem, calc(var(--tile-size) * 0.5), 2rem);
+        --key-size: min(54px, calc((100cqh - 2 * var(--kb-gap)) / 3));
     }
 
     main {
@@ -597,7 +604,6 @@ body:has(#darkmode-toggle:checked) {
 
     #keyboard {
         margin-top: 0;
-        gap: 8px;
     }
 
     .key-row {
@@ -606,11 +612,6 @@ body:has(#darkmode-toggle:checked) {
 
     .key-row-2 {
         padding: 0 30px;
-    }
-
-    .key {
-        min-height: 54px;
-        font-size: 1.12rem;
     }
 
     .key-special {
@@ -626,8 +627,9 @@ body:has(#darkmode-toggle:checked) {
 /* -------------------- Wide desktop (1440px+) -------------------- */
 @media (min-width: 1440px) and (min-height: 700px) {
     :root {
-        --tile-size: 76px;
-        --tile-font-size: 2.3rem;
+        --tile-size: min(76px, calc((100cqh - 5 * var(--board-gap)) / 6));
+        --tile-font-size: clamp(1.3rem, calc(var(--tile-size) * 0.5), 2.3rem);
+        --key-size: min(60px, calc((100cqh - 2 * var(--kb-gap)) / 3));
     }
 
     main {
@@ -651,11 +653,6 @@ body:has(#darkmode-toggle:checked) {
 
     .key-row-2 {
         padding: 0 50px;
-    }
-
-    .key {
-        min-height: 60px;
-        font-size: 1.2rem;
     }
 
     .key.large {
