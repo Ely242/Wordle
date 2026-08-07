@@ -25,11 +25,9 @@
 
     /* Layout tokens */
     --board-gap: 6px;
-    /* Fluid tile: fits 5 tiles across available board width; capped at 62px */
-    --tile-size: min(62px, calc((100vw - 52px) / 5));
-    --tile-font-size: clamp(1.3rem, calc(var(--tile-size) * 0.5), 2rem);
-    /* Fluid tile: fits 5 tiles across available board width; capped at 62px */
-    --tile-size: min(62px, calc((100vw - 52px) / 5));
+    /* Fluid tile: fits 5 tiles across available board width, and 6 rows in the
+       board's available height (via container query units); capped at 62px */
+    --tile-size: min(62px, calc((100vw - 52px) / 5), calc((100cqh - 5 * var(--board-gap)) / 6));
     --tile-font-size: clamp(1.3rem, calc(var(--tile-size) * 0.5), 2rem);
     --key-radius: 4px;
 
@@ -69,7 +67,8 @@ body {
 
 main {
     width: min(520px, 100%);
-    min-height: 100dvh;
+    height: 100dvh;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -81,6 +80,7 @@ main {
 
 /* -------------------- Top bar -------------------- */
 #topbar {
+    flex-shrink: 0;
     min-height: 56px;
     display: flex;
     align-items: center;
@@ -214,18 +214,24 @@ body:has(#darkmode-toggle:checked) {
 
 /* -------------------- Board -------------------- */
 #board {
+    flex: 1 1 auto;
+    min-height: 0;
+    container-type: size;
     margin: 0 auto;
     align-self: center;
-    height: auto;
-    min-width: min(250px, 100vw);
-    max-width: 100%;
+    /* Explicit width: container-type:size disables shrink-to-fit sizing from children */
+    width: min(calc(5 * var(--tile-size) + 4 * var(--board-gap)), 100%);
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: var(--board-gap);
+    overflow: hidden;
 }
 
 .row {
     display: flex;
+    flex-shrink: 0;
+    justify-content: center;
     gap: var(--board-gap);
     perspective: 1200px;
 }
@@ -233,6 +239,7 @@ body:has(#darkmode-toggle:checked) {
 .tile {
     width: var(--tile-size);
     height: var(--tile-size);
+    flex-shrink: 0;
     border: 2px solid var(--border);
     background: var(--tile-bg);
     color: var(--text);
@@ -290,6 +297,7 @@ body:has(#darkmode-toggle:checked) {
 
 /* -------------------- Message -------------------- */
 #message {
+    flex-shrink: 0;
     min-height: 34px;
     display: flex;
     align-items: center;
@@ -330,6 +338,7 @@ body:has(#darkmode-toggle:checked) {
 
 /* -------------------- Keyboard -------------------- */
 #keyboard {
+    flex-shrink: 0;
     margin-top: 6px;
     display: flex;
     flex-direction: column;
@@ -499,8 +508,8 @@ body:has(#darkmode-toggle:checked) {
 @media (min-width: 768px) and (min-height: 600px) {
     :root {
         --board-gap: 8px;
-        --tile-size: 80px;
-        --tile-font-size: 2.4rem;
+        --tile-size: min(80px, calc((100cqh - 5 * var(--board-gap)) / 6));
+        --tile-font-size: clamp(1.3rem, calc(var(--tile-size) * 0.5), 2.4rem);
         --key-radius: 6px;
     }
 
@@ -563,8 +572,8 @@ body:has(#darkmode-toggle:checked) {
 /* -------------------- Laptop / Desktop (1024px+) -------------------- */
 @media (min-width: 1024px) and (min-height: 600px) {
     :root {
-        --tile-size: 66px;
-        --tile-font-size: 2rem;
+        --tile-size: min(66px, calc((100cqh - 5 * var(--board-gap)) / 6));
+        --tile-font-size: clamp(1.3rem, calc(var(--tile-size) * 0.5), 2rem);
     }
 
     main {
@@ -626,8 +635,8 @@ body:has(#darkmode-toggle:checked) {
 /* -------------------- Wide desktop (1440px+) -------------------- */
 @media (min-width: 1440px) and (min-height: 700px) {
     :root {
-        --tile-size: 76px;
-        --tile-font-size: 2.3rem;
+        --tile-size: min(76px, calc((100cqh - 5 * var(--board-gap)) / 6));
+        --tile-font-size: clamp(1.3rem, calc(var(--tile-size) * 0.5), 2.3rem);
     }
 
     main {
